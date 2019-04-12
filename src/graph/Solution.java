@@ -262,64 +262,59 @@ public class Solution {
 
     }
 
-//    public static void main(String[] args) {
-//        int[][] graph = {
-//                {0, 12, 0, 0, 0, 16, 14},
-//                {12, 0, 10, 0, 0, 7, 0},
-//                {0, 10, 0, 3, 5, 6, 0},
-//                {0, 0, 3, 0, 4, 0, 0},
-//                {0, 0, 5, 4, 0, 2, 8},
-//                {16, 7, 6, 0, 2, 0, 9},
-//                {14, 0, 0, 0, 8, 9, 0}
-//        };
-//        Map<Integer, Integer> result = dj(graph);
-//        for (Integer key : result.keySet()) {
-//            System.out.println(key + " " + result.get(key));
-//        }
-//        Map<Integer,Integer>map=new HashMap<>();
-//        map.put(1,2);
-//        map.put(3,4);
-//        for(Integer key:map.keySet()){
-//            System.out.println(map.get(key));
-//        }
-
-    class Ant {
-        int x;
-        int y;
-        int level;
-
-        public Ant(int x, int y, int level) {
-            this.x = x;
-            this.y = y;
-            this.level = level;
+    public void testDj() {
+        int[][] graph = {
+                {0, 12, 0, 0, 0, 16, 14},
+                {12, 0, 10, 0, 0, 7, 0},
+                {0, 10, 0, 3, 5, 6, 0},
+                {0, 0, 3, 0, 4, 0, 0},
+                {0, 0, 5, 4, 0, 2, 8},
+                {16, 7, 6, 0, 2, 0, 9},
+                {14, 0, 0, 0, 8, 9, 0}
+        };
+        Map<Integer, Integer> result = dj(graph);
+        for (Integer key : result.keySet()) {
+            System.out.println(key + " " + result.get(key));
         }
-
-        public void update(int x, int y, int level) {
-            this.x = x;
-            this.y = y;
-            this.level = level;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Ant ant = (Ant) o;
-            return x == ant.x &&
-                    y == ant.y &&
-                    level == ant.level;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(1, 2);
+        map.put(3, 4);
+        for (Integer key : map.keySet()) {
+            System.out.println(map.get(key));
         }
     }
 
     public int swimInWater(int[][] grid) {
-        List<Ant> crawled = new ArrayList<>();
-        crawled.add(new Ant(0, 0, grid[0][0]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((int[] ant1, int[] ant2) -> {
+            if (ant1[2] > ant2[2]) {
+                return 1;
+            } else if (ant1[2] < ant2[2]) {
+                return -1;
+            }
+            return 0;
+        });
         int N = grid.length;
-        int time = 0;
-        int[][] dir = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-        Ant cur = new Ant(0, 0, grid[0][0]), dst = new Ant(N - 1, N - 1, grid[N - 1][N - 1]);
-        while (!cur.equals(dst)) {
+        boolean[][] board = new boolean[N][N];
+        pq.offer(new int[]{0, 0, grid[0][0]});
+        board[0][0] = true;
 
+        int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        int time = 1;
+        while (!pq.isEmpty()) {
+            int[] a = pq.poll();
+            time = Math.max(time, a[2]);
+            if (a[0] == N - 1 && a[1] == N - 1) {
+                return time;
+            }
+            for (int[] dir : dirs) {
+                int x = a[0] + dir[0], y = a[1] + dir[1];
+                if (x < 0 || x == N || y < 0 || y == N || board[x][y]) {
+                    continue;
+                }
+                pq.offer(new int[]{x, y, grid[x][y]});
+                board[x][y] = true;
+            }
         }
+        return time;
     }
 }
