@@ -123,4 +123,14 @@ public class Solution {
     }
     //  Partition to K Equal Sum Subsets
 
+    public int maxSubArray(int[] nums) {
+        int prev_cur = nums[0];
+        int max = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            prev_cur = prev_cur > 0 ? prev_cur + nums[i] : nums[i];
+            max = Math.max(max, prev_cur);
+        }
+        return max;
+    }
+
 }
