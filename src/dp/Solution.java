@@ -133,4 +133,26 @@ public class Solution {
         return max;
     }
 
+    private int MOD = (int) 1e9 + 7;
+
+    public int sumSubarrayMins(int[] A) {
+        List<Integer> prev = new ArrayList<>();
+        prev.add(A[0]);
+        long result = 0;
+        for (int i = 1; i < A.length; i++) {
+            for (int j = 0; j < prev.size(); j++) {
+                int num = prev.get(j);
+                result += num;
+                if (A[i] < num) {
+                    prev.set(j, A[i]);
+                }
+            }
+            prev.add(A[i]);
+        }
+        for (int n : prev) {
+            result += n;
+        }
+        result %= MOD;
+        return (int) result;
+    }
 }
